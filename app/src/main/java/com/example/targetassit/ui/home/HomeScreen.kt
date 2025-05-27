@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Adjust
-import androidx.compose.material.icons.filled.TouchApp
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.filled.GridOn
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -94,7 +94,7 @@ fun HomeScreen(
             
             // Main action button
             CircleButton(
-                icon = Icons.Filled.Adjust,
+                icon = Icons.Filled.Star,
                 label = stringResource(R.string.btn_start_overlay),
                 onClick = onStartOverlayClick,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -106,13 +106,13 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleButton(
-                    icon = Icons.Filled.GridOn,
+                    icon = Icons.Filled.Add,
                     label = stringResource(R.string.btn_sensitivity),
                     onClick = onSensitivityClick
                 )
                 
                 CircleButton(
-                    icon = Icons.Filled.TouchApp,
+                    icon = Icons.Filled.Edit,
                     label = stringResource(R.string.btn_custom_hud),
                     onClick = onCustomHudClick
                 )
