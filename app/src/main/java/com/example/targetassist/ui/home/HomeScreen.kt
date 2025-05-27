@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.home
+package com.example.targetassist.ui.home
 
 import android.Manifest
 import android.widget.Toast
@@ -32,16 +32,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.targetassit.ui.common.CircularButton
-import com.example.targetassit.ui.common.PanelCard
-import com.example.targetassit.ui.theme.CardBackground
-import com.example.targetassit.ui.theme.ErrorRed
-import com.example.targetassit.ui.theme.SecondaryTeal
-import com.example.targetassit.ui.theme.SuccessGreen
-import com.example.targetassit.ui.theme.SurfaceLight
-import com.example.targetassit.ui.theme.TargetAssitTheme
-import com.example.targetassit.ui.theme.TextPrimary
-import com.example.targetassit.ui.theme.TextSecondary
+import com.example.targetassist.ui.common.CircularButton
+import com.example.targetassist.ui.common.PanelCard
+import com.example.targetassist.ui.theme.CardBackground
+import com.example.targetassist.ui.theme.ErrorRed
+import com.example.targetassist.ui.theme.SecondaryTeal
+import com.example.targetassist.ui.theme.SuccessGreen
+import com.example.targetassist.ui.theme.SurfaceLight
+import com.example.targetassist.ui.theme.TargetAssistTheme
+import com.example.targetassist.ui.theme.TextPrimary
+import com.example.targetassist.ui.theme.TextSecondary
 
 @Composable
 fun HomeScreen(
@@ -269,7 +269,7 @@ fun HomeScreen(
 @Preview(showBackground = true, widthDp = 800, heightDp = 400)
 @Composable
 fun HomeScreenPreview() {
-    TargetAssitTheme {
+    TargetAssistTheme {
         HomeScreen()
     }
 } 

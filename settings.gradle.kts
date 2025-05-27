@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Target Assit"
+rootProject.name = "Target Assist"
 include(":app")

@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.home
+package com.example.targetassist.ui.home
 
 import android.app.Application
 import android.content.Context

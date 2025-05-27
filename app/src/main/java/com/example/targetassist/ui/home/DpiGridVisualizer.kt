@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.home
+package com.example.targetassist.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,9 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.targetassit.ui.theme.BackgroundDark
-import com.example.targetassit.ui.theme.PrimaryBlue
-import com.example.targetassit.ui.theme.SecondaryTeal
+import com.example.targetassist.ui.theme.BackgroundDark
+import com.example.targetassist.ui.theme.PrimaryBlue
+import com.example.targetassist.ui.theme.SecondaryTeal
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
