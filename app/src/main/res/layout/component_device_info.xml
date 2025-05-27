@@ -32,13 +32,16 @@
 
             <TextView
                 android:id="@+id/android_version_1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Android Version : 10"
                 android:textColor="#000000"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,12 +49,15 @@
                 android:text="|"
                 android:textColor="#000000" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/dpi_1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
                 android:text="Dpi : 360"
                 android:textColor="#000000"
                 android:textSize="12sp" />
@@ -64,20 +70,33 @@
 
             <TextView
                 android:id="@+id/resolution_1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Resolution : 768×120 |"
+                android:text="Resolution : 768×120"
                 android:textColor="#000000"
                 android:textSize="12sp" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/touch_1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="Touch : 6hz"
+                android:text="Touch : 5hz"
                 android:textColor="#000000"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -97,13 +116,16 @@
 
             <TextView
                 android:id="@+id/android_version_2"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Android Version : 10"
                 android:textColor="#000000"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,12 +133,15 @@
                 android:text="|"
                 android:textColor="#000000" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/dpi_2"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
                 android:text="Dpi : 360"
                 android:textColor="#000000"
                 android:textSize="12sp" />
@@ -129,20 +154,33 @@
 
             <TextView
                 android:id="@+id/resolution_2"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Resolution : 768×120 |"
+                android:text="Resolution : 768×120"
                 android:textColor="#000000"
                 android:textSize="12sp" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/touch_2"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="Touch : 6hz"
+                android:text="Touch : 5hz"
                 android:textColor="#000000"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -162,13 +200,16 @@
 
             <TextView
                 android:id="@+id/android_version_3"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Android Version : 10"
                 android:textColor="#000000"
-                android:textSize="12sp"
-                android:textStyle="italic" />
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -176,12 +217,15 @@
                 android:text="|"
                 android:textColor="#000000" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/dpi_3"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
                 android:text="Dpi : 360"
                 android:textColor="#000000"
                 android:textSize="12sp" />
@@ -194,20 +238,33 @@
 
             <TextView
                 android:id="@+id/resolution_3"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Resolution : 768×120 |"
+                android:text="Resolution : 768×120"
                 android:textColor="#000000"
                 android:textSize="12sp" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/touch_3"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="Touch : 6hz"
+                android:text="Touch : 5hz"
                 android:textColor="#000000"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -230,7 +287,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/aim_with_precision"
-                android:textColor="#000000"
+                android:textColor="#FF0000"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
