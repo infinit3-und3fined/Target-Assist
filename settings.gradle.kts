@@ -5,6 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -64,5 +65,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Target-Assit"
+rootProject.name = "Target-Assist"
 include(":app")
