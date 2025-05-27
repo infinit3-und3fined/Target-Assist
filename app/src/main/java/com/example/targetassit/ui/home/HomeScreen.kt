@@ -1,5 +1,6 @@
 package com.example.targetassit.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -17,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.targetassit.R
+import com.example.targetassit.service.overlay.OverlayService
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +34,11 @@ fun HomeScreen(
     onNavigateToHudLayout: () -> Unit,
     onRequestOverlayPermission: () -> Unit
 ) {
+    val context = LocalContext.current
     var overlayEnabled by remember { mutableStateOf(false) }
+    
+    // Check if overlay permission is granted
+    val canDrawOverlays = remember { Settings.canDrawOverlays(context) }
     
     Scaffold(
         topBar = {
@@ -129,12 +136,25 @@ fun HomeScreen(
                         Text("Enable Overlay")
                         Switch(
                             checked = overlayEnabled,
-                            onCheckedChange = { 
-                                if (!overlayEnabled) {
+                            onCheckedChange = { isChecked -> 
+                                if (!canDrawOverlays) {
                                     onRequestOverlayPermission()
+                                    return@Switch
                                 }
-                                overlayEnabled = it
-                            }
+                                
+                                overlayEnabled = isChecked
+                                toggleOverlayService(context, isChecked)
+                            },
+                            enabled = canDrawOverlays
+                        )
+                    }
+                    
+                    if (!canDrawOverlays) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Permission required to display overlay",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -149,5 +169,14 @@ fun HomeScreen(
                 fontSize = 12.sp
             )
         }
+    }
+}
+
+private fun toggleOverlayService(context: Context, enabled: Boolean) {
+    val intent = Intent(context, OverlayService::class.java)
+    if (enabled) {
+        context.startService(intent)
+    } else {
+        context.stopService(intent)
     }
 } 

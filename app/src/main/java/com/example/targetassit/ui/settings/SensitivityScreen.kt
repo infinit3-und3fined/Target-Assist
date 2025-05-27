@@ -14,20 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.targetassit.domain.model.SensitivitySettings
 import com.example.targetassit.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SensitivityScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: SensitivityViewModel = viewModel()
 ) {
-    var settings by remember {
-        mutableStateOf(SensitivitySettings())
-    }
+    val settings by viewModel.settings.collectAsState()
     
     Scaffold(
         topBar = {
@@ -68,7 +69,7 @@ fun SensitivityScreen(
                     Slider(
                         value = settings.dpi.toFloat(),
                         onValueChange = { 
-                            settings = settings.copy(dpi = it.toInt())
+                            viewModel.updateDpi(it.toInt())
                         },
                         valueRange = Constants.MIN_DPI.toFloat()..Constants.MAX_DPI.toFloat(),
                         steps = ((Constants.MAX_DPI - Constants.MIN_DPI) / 20) - 1
@@ -92,34 +93,37 @@ fun SensitivityScreen(
             SensitivitySliderSection(
                 title = "General Sensitivity",
                 value = settings.generalSensitivity,
-                onValueChange = { settings = settings.copy(generalSensitivity = it) }
+                onValueChange = { viewModel.updateGeneralSensitivity(it) }
             )
             
             // Red Dot Sensitivity
             SensitivitySliderSection(
                 title = "Red Dot Sensitivity",
                 value = settings.redDotSensitivity,
-                onValueChange = { settings = settings.copy(redDotSensitivity = it) }
+                onValueChange = { viewModel.updateRedDotSensitivity(it) }
             )
             
             // 2x Scope Sensitivity
             SensitivitySliderSection(
                 title = "2x Scope Sensitivity",
                 value = settings.twoXScopeSensitivity,
-                onValueChange = { settings = settings.copy(twoXScopeSensitivity = it) }
+                onValueChange = { viewModel.update2xScopeSensitivity(it) }
             )
             
             // 4x Scope Sensitivity
             SensitivitySliderSection(
                 title = "4x Scope Sensitivity",
                 value = settings.fourXScopeSensitivity,
-                onValueChange = { settings = settings.copy(fourXScopeSensitivity = it) }
+                onValueChange = { viewModel.update4xScopeSensitivity(it) }
             )
             
             Spacer(modifier = Modifier.height(16.dp))
             
             Button(
-                onClick = { /* Save settings */ },
+                onClick = { 
+                    viewModel.saveSettings()
+                    onNavigateBack()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
