@@ -13,20 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,159 +33,143 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.targetassit.service.overlay.OverlayService
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToSensitivitySettings: () -> Unit
+    navigateToSettings: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val canDrawOverlays = Settings.canDrawOverlays(context)
     var showPermissionDialog by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Target Assist") },
-                actions = {
-                    IconButton(onClick = navigateToSensitivitySettings) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Sensitivity Settings"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Title
+        Text(
+            text = "Target Assist",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
+        
+        Text(
+            text = "Optimize your Free Fire sensitivity and aim",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Overlay Permission Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(
-                text = "Optimize your Free Fire sensitivity and aim",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Overlay Permission Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Text(
+                    text = "Overlay Permission",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Text(
+                    text = "Target Assist needs permission to display over other apps",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Button(
+                    onClick = {
+                        val intent = Intent(
+                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:${context.packageName}")
+                        )
+                        context.startActivity(intent)
+                    },
+                    enabled = !canDrawOverlays
+                ) {
+                    Text(text = if (canDrawOverlays) "Permission Granted" else "Grant Permission")
+                }
+            }
+        }
+
+        // Overlay Control Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Overlay Controls",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Overlay Permission",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Text(
-                        text = "Target Assist needs permission to display over other apps",
+                        text = "Enable Overlay",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     
-                    Button(
-                        onClick = {
-                            val intent = Intent(
-                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:${context.packageName}")
-                            )
-                            context.startActivity(intent)
-                        },
-                        enabled = !canDrawOverlays
-                    ) {
-                        Text(text = if (canDrawOverlays) "Permission Granted" else "Grant Permission")
-                    }
-                }
-            }
-
-            // Overlay Control Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Overlay Controls",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Enable Overlay",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        
-                        Switch(
-                            checked = uiState.overlayEnabled,
-                            onCheckedChange = { enabled ->
-                                if (canDrawOverlays) {
-                                    viewModel.setOverlayEnabled(enabled)
-                                    if (enabled) {
-                                        OverlayService.startService(context)
-                                    } else {
-                                        OverlayService.stopService(context)
-                                    }
+                    Switch(
+                        checked = uiState.overlayEnabled,
+                        onCheckedChange = { enabled ->
+                            if (canDrawOverlays) {
+                                viewModel.setOverlayEnabled(enabled)
+                                if (enabled) {
+                                    OverlayService.startService(context)
                                 } else {
-                                    showPermissionDialog = true
+                                    OverlayService.stopService(context)
                                 }
-                            },
-                            enabled = canDrawOverlays
-                        )
-                    }
+                            } else {
+                                showPermissionDialog = true
+                            }
+                        },
+                        enabled = canDrawOverlays
+                    )
                 }
             }
+        }
 
-            // Quick Settings Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        // Settings Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Text(
+                    text = "Sensitivity Settings",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Text(
+                    text = "Configure DPI and sensitivity settings for optimal aim",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Button(
+                    onClick = navigateToSettings,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = "Sensitivity Settings",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Text(
-                        text = "Current DPI: ${uiState.dpi}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    
-                    Button(
-                        onClick = navigateToSensitivitySettings,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Adjust Sensitivity Settings")
-                    }
+                    Text(text = "Open Settings")
                 }
             }
         }

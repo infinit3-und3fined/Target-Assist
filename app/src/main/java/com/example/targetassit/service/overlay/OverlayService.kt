@@ -11,16 +11,11 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.app.NotificationCompat
 import com.example.targetassit.R
 import com.example.targetassit.data.preferences.SettingsPreferences
-import com.example.targetassit.ui.common.DpiGridView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,16 +35,9 @@ class OverlayService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private lateinit var windowManager: WindowManager
     private var overlayView: View? = null
-    private var params: WindowManager.LayoutParams? = null
 
     private val channelId = "overlay_service_channel"
     private val notificationId = 1001
-
-    // Variables for drag functionality
-    private var initialX: Int = 0
-    private var initialY: Int = 0
-    private var initialTouchX: Float = 0f
-    private var initialTouchY: Float = 0f
 
     override fun onCreate() {
         super.onCreate()
@@ -82,7 +70,7 @@ class OverlayService : Service() {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         overlayView = inflater.inflate(R.layout.overlay_layout, null)
 
-        params = WindowManager.LayoutParams(
+        val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -102,79 +90,7 @@ class OverlayService : Service() {
     }
 
     private fun setupOverlayControls() {
-        overlayView?.let { view ->
-            // Setup drag handle for moving the overlay
-            val dragHandle = view.findViewById<ImageView>(R.id.drag_handle)
-            dragHandle.setOnTouchListener { _, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        // Save initial position
-                        initialX = params?.x ?: 0
-                        initialY = params?.y ?: 0
-                        initialTouchX = event.rawX
-                        initialTouchY = event.rawY
-                        true
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        // Calculate new position
-                        params?.x = initialX + (event.rawX - initialTouchX).toInt()
-                        params?.y = initialY + (event.rawY - initialTouchY).toInt()
-                        // Update overlay position
-                        params?.let { windowManager.updateViewLayout(view, it) }
-                        true
-                    }
-                    else -> false
-                }
-            }
-
-            // Setup close button
-            val closeButton = view.findViewById<ImageButton>(R.id.btn_close)
-            closeButton.setOnClickListener {
-                stopSelf()
-            }
-
-            // Setup settings button
-            val settingsButton = view.findViewById<ImageButton>(R.id.btn_settings)
-            settingsButton.setOnClickListener {
-                // Toggle settings container visibility
-                val settingsContainer = view.findViewById<LinearLayout>(R.id.settings_container)
-                val dpiGridContainer = view.findViewById<LinearLayout>(R.id.dpi_grid_container)
-                
-                if (settingsContainer.visibility == View.VISIBLE) {
-                    settingsContainer.visibility = View.GONE
-                } else {
-                    settingsContainer.visibility = View.VISIBLE
-                    dpiGridContainer.visibility = View.GONE
-                }
-            }
-
-            // Setup DPI button
-            val dpiButton = view.findViewById<ImageButton>(R.id.btn_dpi)
-            dpiButton.setOnClickListener {
-                // Toggle DPI grid container visibility
-                val dpiGridContainer = view.findViewById<LinearLayout>(R.id.dpi_grid_container)
-                val settingsContainer = view.findViewById<LinearLayout>(R.id.settings_container)
-                
-                if (dpiGridContainer.visibility == View.VISIBLE) {
-                    dpiGridContainer.visibility = View.GONE
-                } else {
-                    dpiGridContainer.visibility = View.VISIBLE
-                    settingsContainer.visibility = View.GONE
-                    
-                    // Add DPI grid view if it doesn't exist
-                    if (dpiGridContainer.childCount == 0) {
-                        serviceScope.launch {
-                            val dpi = settingsPreferences.dpi.first()
-                            val dpiGridView = DpiGridView(this@OverlayService).apply {
-                                this.dpi = dpi
-                                this.gridSize = 200
-                            }
-                            dpiGridContainer.addView(dpiGridView)
-                        }
-                    }
-                }
-            }
-        }
+        // TODO: Setup overlay UI controls and interactions
     }
 
     private fun createNotificationChannel() {
