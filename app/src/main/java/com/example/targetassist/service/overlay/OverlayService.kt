@@ -1,145 +1,129 @@
 package com.example.targetassist.service.overlay
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.FrameLayout
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
-import com.example.targetassist.ui.theme.PrimaryBlue
-import com.example.targetassist.ui.theme.SecondaryTeal
+import android.widget.TextView
+import androidx.core.app.NotificationCompat
+import com.example.targetassist.R
 
 class OverlayService : Service() {
     
     private var windowManager: WindowManager? = null
     private var overlayView: View? = null
-    private var isOverlayShown = false
+    private var isOverlayAdded = false
+    
+    companion object {
+        private const val NOTIFICATION_ID = 1
+        private const val CHANNEL_ID = "TargetAssistOverlay"
+        
+        // Static tracking of service state
+        var isRunning = false
+            private set
+        
+        // For observing in ViewModel
+        fun getIsRunning(context: Context): Boolean {
+            return isRunning
+        }
+    }
     
     override fun onCreate() {
         super.onCreate()
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        createNotificationChannel()
+        startForeground(NOTIFICATION_ID, createNotification())
+        isRunning = true
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_SHOW -> showOverlay()
-            ACTION_HIDE -> hideOverlay()
-            ACTION_TOGGLE -> toggleOverlay()
-        }
-        
+        showOverlay()
         return START_STICKY
     }
     
+    override fun onDestroy() {
+        hideOverlay()
+        isRunning = false
+        super.onDestroy()
+    }
+    
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
+    
     private fun showOverlay() {
-        if (isOverlayShown) return
+        if (isOverlayAdded) return
         
+        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        overlayView = inflater.inflate(R.layout.overlay_dpi, null)
+        
+        // Find and update the DPI text view
+        val dpiTextView = overlayView?.findViewById<TextView>(R.id.tvDpi)
+        dpiTextView?.text = "${resources.displayMetrics.densityDpi} DPI"
+        
+        // Setup window parameters
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                WindowManager.LayoutParams.TYPE_PHONE
+            },
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
             PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.CENTER
-        }
+        )
         
-        val container = FrameLayout(this)
-        val composeView = ComposeView(this).apply {
-            setContent {
-                OverlayContent()
-            }
-        }
+        // Position the overlay at the top-right corner
+        params.gravity = Gravity.TOP or Gravity.END
+        params.x = 0
+        params.y = 100
         
-        container.addView(composeView)
-        overlayView = container
+        // Add the view to the window
         windowManager?.addView(overlayView, params)
-        isOverlayShown = true
+        isOverlayAdded = true
     }
     
     private fun hideOverlay() {
-        if (!isOverlayShown) return
-        
-        overlayView?.let {
-            windowManager?.removeView(it)
+        if (overlayView != null && windowManager != null && isOverlayAdded) {
+            windowManager?.removeView(overlayView)
             overlayView = null
-            isOverlayShown = false
+            isOverlayAdded = false
         }
     }
     
-    private fun toggleOverlay() {
-        if (isOverlayShown) {
-            hideOverlay()
-        } else {
-            showOverlay()
-        }
-    }
-    
-    @Composable
-    private fun OverlayContent() {
-        // Modern crosshair overlay
-        Box(
-            modifier = Modifier
-                .size(14.dp)
-                .clip(CircleShape)
-                .background(Color.Transparent)
-                .border(1.5f.dp, SecondaryTeal, CircleShape)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(4.dp)
-                    .clip(CircleShape)
-                    .background(PrimaryBlue)
-            )
-        }
-    }
-    
-    override fun onBind(intent: Intent?): IBinder? = null
-    
-    override fun onDestroy() {
-        super.onDestroy()
-        hideOverlay()
-    }
-    
-    companion object {
-        private const val ACTION_SHOW = "com.example.targetassist.action.SHOW_OVERLAY"
-        private const val ACTION_HIDE = "com.example.targetassist.action.HIDE_OVERLAY"
-        private const val ACTION_TOGGLE = "com.example.targetassist.action.TOGGLE_OVERLAY"
-        
-        fun showOverlay(context: Context) {
-            val intent = Intent(context, OverlayService::class.java).apply {
-                action = ACTION_SHOW
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Target Assist Overlay"
+            val descriptionText = "Shows DPI information overlay"
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
             }
-            context.startService(intent)
-        }
-        
-        fun hideOverlay(context: Context) {
-            val intent = Intent(context, OverlayService::class.java).apply {
-                action = ACTION_HIDE
-            }
-            context.startService(intent)
-        }
-        
-        fun toggleOverlay(context: Context) {
-            val intent = Intent(context, OverlayService::class.java).apply {
-                action = ACTION_TOGGLE
-            }
-            context.startService(intent)
+            
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
+    
+    private fun createNotification(): Notification {
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Target Assist")
+            .setContentText("Displaying DPI overlay")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+} 
 } 

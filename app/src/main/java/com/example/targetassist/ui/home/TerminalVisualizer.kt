@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,9 +32,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.targetassist.ui.theme.BackgroundDark
-import com.example.targetassist.ui.theme.PrimaryBlue
 import com.example.targetassist.ui.theme.SecondaryTeal
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
@@ -44,19 +40,11 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun DpiGridVisualizer(
+fun TerminalVisualizer(
     dpi: Int,
-    modifier: Modifier = Modifier,
-    systemInfoViewModel: SystemInfoViewModel? = null
+    modifier: Modifier = Modifier
 ) {
-    // Create a local fallback for system info if the provided viewModel is null
-    val localViewModel = try {
-        systemInfoViewModel ?: viewModel()
-    } catch (e: Exception) {
-        null
-    }
-    
-    // Create a default system info to use if viewModel is null
+    // For device info display
     val defaultSystemInfo = remember {
         SystemInfo(
             deviceModel = "Android Device",
@@ -70,9 +58,6 @@ fun DpiGridVisualizer(
             touchSamplingRate = "Unknown"
         )
     }
-    
-    // Get the system info from the viewModel if available, otherwise use default
-    val systemInfo = localViewModel?.systemInfo?.collectAsState()?.value ?: defaultSystemInfo
     
     // For blinking cursor effect
     var showCursor by remember { mutableStateOf(true) }
@@ -132,7 +117,7 @@ fun DpiGridVisualizer(
                     .padding(8.dp)
             ) {
                 TerminalLine(
-                    prefix = "root@${systemInfo.deviceModel.lowercase().replace(" ", "-")}:~#",
+                    prefix = "root@device:~#",
                     command = " neofetch",
                     prefixColor = Color(0xFF00FF00)
                 )
@@ -162,20 +147,20 @@ fun DpiGridVisualizer(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 // System info in colorful terminal style
-                InfoLine(label = "OS", value = "Android ${systemInfo.androidVersion}")
-                InfoLine(label = "Host", value = systemInfo.deviceModel)
-                InfoLine(label = "CPU", value = systemInfo.cpuInfo)
-                InfoLine(label = "CPU Usage", value = systemInfo.cpuUsage)
-                InfoLine(label = "Memory", value = systemInfo.memoryInfo)
-                InfoLine(label = "Display", value = systemInfo.screenInfo)
-                InfoLine(label = "Refresh Rate", value = systemInfo.refreshRate)
-                InfoLine(label = "DPI", value = systemInfo.dpi)
-                InfoLine(label = "Touch Rate", value = systemInfo.touchSamplingRate)
+                InfoLine(label = "OS", value = "Android ${defaultSystemInfo.androidVersion}")
+                InfoLine(label = "Host", value = defaultSystemInfo.deviceModel)
+                InfoLine(label = "CPU", value = defaultSystemInfo.cpuInfo)
+                InfoLine(label = "CPU Usage", value = defaultSystemInfo.cpuUsage)
+                InfoLine(label = "Memory", value = defaultSystemInfo.memoryInfo)
+                InfoLine(label = "Display", value = defaultSystemInfo.screenInfo)
+                InfoLine(label = "Refresh Rate", value = defaultSystemInfo.refreshRate)
+                InfoLine(label = "DPI", value = defaultSystemInfo.dpi)
+                InfoLine(label = "Touch Rate", value = defaultSystemInfo.touchSamplingRate)
                 
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 TerminalLine(
-                    prefix = "root@${systemInfo.deviceModel.lowercase().replace(" ", "-")}:~#",
+                    prefix = "root@device:~#",
                     command = " ls -la /system/app",
                     prefixColor = Color(0xFF00FF00)
                 )
@@ -201,7 +186,7 @@ fun DpiGridVisualizer(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 TerminalLine(
-                    prefix = "root@${systemInfo.deviceModel.lowercase().replace(" ", "-")}:~#",
+                    prefix = "root@device:~#",
                     command = " service list | grep display",
                     prefixColor = Color(0xFF00FF00)
                 )
@@ -218,7 +203,7 @@ fun DpiGridVisualizer(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 TerminalLine(
-                    prefix = "root@${systemInfo.deviceModel.lowercase().replace(" ", "-")}:~#",
+                    prefix = "root@device:~#",
                     command = " cat /proc/interrupts | grep -i touch",
                     prefixColor = Color(0xFF00FF00)
                 )
@@ -238,7 +223,7 @@ fun DpiGridVisualizer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "root@${systemInfo.deviceModel.lowercase().replace(" ", "-")}:~#",
+                        text = "root@device:~#",
                         color = Color(0xFF00FF00),
                         fontFamily = FontFamily.Monospace,
                         fontSize = 14.sp

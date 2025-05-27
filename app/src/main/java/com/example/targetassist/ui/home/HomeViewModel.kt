@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import android.content.Context
+import android.content.Intent
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     
@@ -25,6 +27,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     
     // Current device DPI from preferences - needed for grid visualization only
     val currentDpi = appPreferences.dpiFlow
+    
+    private val _isOverlayRunning = MutableStateFlow(OverlayService.isRunning)
+    val isOverlayRunning: StateFlow<Boolean> = _isOverlayRunning.asStateFlow()
     
     init {
         viewModelScope.launch {
@@ -55,27 +60,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _permissionsNeeded.value = !allGranted
     }
     
-    fun onStartOverlay() {
-        viewModelScope.launch {
-            appPreferences.setOverlayActive(true)
-            _uiState.value = _uiState.value.copy(
-                isOverlayActive = true
-            )
-            
-            // Start the overlay service
-            OverlayService.showOverlay(getApplication())
-        }
+    fun startOverlayService() {
+        val intent = Intent(application, OverlayService::class.java)
+        application.startService(intent)
+        _isOverlayRunning.value = true
     }
     
-    fun onStopOverlay() {
-        viewModelScope.launch {
-            appPreferences.setOverlayActive(false)
-            _uiState.value = _uiState.value.copy(
-                isOverlayActive = false
-            )
-            
-            // Stop the overlay service
-            OverlayService.hideOverlay(getApplication())
+    fun stopOverlayService() {
+        val intent = Intent(application, OverlayService::class.java)
+        application.stopService(intent)
+        _isOverlayRunning.value = false
+    }
+    
+    fun toggleOverlayService() {
+        if (_isOverlayRunning.value) {
+            stopOverlayService()
+        } else {
+            startOverlayService()
         }
     }
     

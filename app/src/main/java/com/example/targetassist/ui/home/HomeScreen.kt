@@ -1,11 +1,14 @@
 package com.example.targetassist.ui.home
 
-import android.Manifest
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import android.content.Intent
+import android.provider.Settings
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Close
@@ -17,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,13 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.targetassist.service.overlay.OverlayService
 import com.example.targetassist.ui.common.CircularButton
 import com.example.targetassist.ui.common.PanelCard
 import com.example.targetassist.ui.theme.CardBackground
@@ -42,225 +49,105 @@ import com.example.targetassist.ui.theme.SurfaceLight
 import com.example.targetassist.ui.theme.TargetAssistTheme
 import com.example.targetassist.ui.theme.TextPrimary
 import com.example.targetassist.ui.theme.TextSecondary
+import com.example.targetassist.util.PermissionHelper
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(),
+    systemInfoViewModel: SystemInfoViewModel = viewModel()
 ) {
-    // Use a safe pattern for accessing the systemInfoViewModel to prevent crashes
     val context = LocalContext.current
-    val systemInfoViewModel = try {
-        viewModel<SystemInfoViewModel>()
-    } catch (e: Exception) {
-        null
-    }
+    val lifecycleOwner = LocalLifecycleOwner.current
     
-    val uiState by viewModel.uiState.collectAsState()
-    val currentDpi by viewModel.currentDpi.collectAsState()
-    val permissionsNeeded by viewModel.permissionsNeeded.collectAsState()
-    
-    // For handling system info permissions
     var showPermissionDialog by remember { mutableStateOf(false) }
+    val isOverlayRunning by homeViewModel.isOverlayRunning.collectAsState()
     
-    val permissionsLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val allGranted = permissions.values.all { it }
-        viewModel.onPermissionsResult(allGranted)
-        
-        if (allGranted) {
-            Toast.makeText(context, "Permissions granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Some permissions denied. System info may be limited.", Toast.LENGTH_LONG).show()
+    // Check for system overlay permission
+    LaunchedEffect(Unit) {
+        if (!PermissionHelper.canDrawOverlays(context)) {
+            showPermissionDialog = true
         }
     }
     
-    // Check if we need to show permission dialog
-    LaunchedEffect(permissionsNeeded) {
-        showPermissionDialog = permissionsNeeded
-    }
-    
-    // Permission dialog
-    if (showPermissionDialog) {
-        AlertDialog(
-            onDismissRequest = { showPermissionDialog = false },
-            icon = { Icon(Icons.Default.Warning, contentDescription = null) },
-            title = { Text("Permissions Required") },
-            text = { Text("Target Assist needs permissions to access system information for the terminal display.") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showPermissionDialog = false
-                        permissionsLauncher.launch(
-                            arrayOf(
-                                Manifest.permission.READ_PHONE_STATE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            )
-                        )
-                    }
-                ) {
-                    Text("Grant Permissions")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showPermissionDialog = false }) {
-                    Text("Later")
+    // Monitor permission changes when app returns from settings
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                if (PermissionHelper.canDrawOverlays(context)) {
+                    showPermissionDialog = false
                 }
             }
-        )
+        }
+        
+        lifecycleOwner.lifecycle.addObserver(observer)
+        
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
     
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = SurfaceLight
+        color = MaterialTheme.colorScheme.background
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp)
-        ) {
-            // Left panel (larger panel) with DPI Grid Visualization as terminal
-            PanelCard(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                elevation = 2
-            ) {
-                DpiGridVisualizer(dpi = currentDpi)
-            }
-            
-            Spacer(modifier = Modifier.width(8.dp))
-            
-            // Right panel (contains top row and bottom section)
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                // Top row with three equal cards
-                Row(
+                // Title
+                Text(
+                    text = "Target Assist",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                // Terminal Visualizer
+                TerminalVisualizer(
+                    dpi = context.resources.displayMetrics.densityDpi,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.3f)
+                        .weight(1f)
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Toggle Overlay Button
+                Button(
+                    onClick = { homeViewModel.toggleOverlayService() },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    // First card - DPI
-                    PanelCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "DPI",
-                                color = TextPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.width(8.dp))
-                    
-                    // Second card - Layout
-                    PanelCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Layout",
-                                color = TextPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.width(8.dp))
-                    
-                    // Third card - Settings
-                    PanelCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Settings",
-                                color = TextPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
+                    Text(
+                        text = if (isOverlayRunning) "Stop Overlay" else "Start Overlay"
+                    )
                 }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Bottom section with circular button
-                PanelCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.7f)
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        // Status indicator - small colored dot with text
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .background(
-                                        color = if (uiState.isOverlayActive) SuccessGreen else TextSecondary,
-                                        shape = androidx.compose.foundation.shape.CircleShape
-                                    )
-                            )
-                            
-                            Spacer(modifier = Modifier.width(8.dp))
-                            
-                            Text(
-                                text = if (uiState.isOverlayActive) "Overlay active" else "Overlay inactive",
-                                color = TextSecondary,
-                                fontSize = 14.sp
-                            )
-                        }
-                        
-                        // Circular button with shadow
-                        CircularButton(
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(16.dp),
-                            size = 70.dp,
-                            backgroundColor = if (uiState.isOverlayActive) 
-                                ErrorRed else SecondaryTeal,
-                            icon = if (uiState.isOverlayActive) 
-                                Icons.Filled.Close else Icons.Filled.PlayArrow,
-                            onClick = { 
-                                if (uiState.isOverlayActive) {
-                                    viewModel.onStopOverlay()
-                                } else {
-                                    viewModel.onStartOverlay()
-                                }
+            }
+            
+            // Permission Dialog
+            if (showPermissionDialog) {
+                AlertDialog(
+                    onDismissRequest = { },
+                    title = { Text("Permission Required") },
+                    text = { Text("This app needs the overlay permission to display DPI information on top of other apps.") },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                val intent = Intent(
+                                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+                                )
+                                context.startActivity(intent)
                             }
-                        )
+                        ) {
+                            Text("Grant Permission")
+                        }
+                    },
+                    dismissButton = {
+                        Button(onClick = { showPermissionDialog = false }) {
+                            Text("Later")
+                        }
                     }
-                }
+                )
             }
         }
     }
