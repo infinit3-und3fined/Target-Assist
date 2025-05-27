@@ -1,20 +1,33 @@
 package com.example.targetassit.ui.home
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Computer
+import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.targetassit.ui.theme.BackgroundDark
 import com.example.targetassit.ui.theme.PrimaryBlue
 import com.example.targetassit.ui.theme.SecondaryTeal
-import com.example.targetassit.ui.theme.SurfaceLight
-import kotlin.math.roundToInt
 
 @Composable
 fun DpiGridVisualizer(
@@ -24,65 +37,171 @@ fun DpiGridVisualizer(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(SurfaceLight)
+            .background(BackgroundDark)
             .padding(16.dp)
     ) {
-        // Calculate grid spacing based on DPI
-        val scaleFactor = 0.2f
-        val spacing = (dpi * scaleFactor).roundToInt().coerceAtLeast(10)
-        
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val width = size.width
-            val height = size.height
-            
-            // Draw vertical lines
-            for (x in 0..width.toInt() step spacing) {
-                drawLine(
-                    color = Color(0xFFE0E0E0),
-                    start = Offset(x.toFloat(), 0f),
-                    end = Offset(x.toFloat(), height),
-                    strokeWidth = 0.5f
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Terminal header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Terminal,
+                    contentDescription = null,
+                    tint = SecondaryTeal,
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                Text(
+                    text = "Target-Assist Terminal",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
                 )
             }
             
-            // Draw horizontal lines
-            for (y in 0..height.toInt() step spacing) {
-                drawLine(
-                    color = Color(0xFFE0E0E0),
-                    start = Offset(0f, y.toFloat()),
-                    end = Offset(width, y.toFloat()),
-                    strokeWidth = 0.5f
+            // Terminal content
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(8.dp)
+            ) {
+                TerminalLine(
+                    prefix = "user@target-assist:~$",
+                    command = " ls -la",
+                    prefixColor = PrimaryBlue
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Text(
+                    text = "total 24",
+                    color = Color.White,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp
+                )
+                
+                Spacer(modifier = Modifier.height(2.dp))
+                
+                TerminalLine(
+                    prefix = "drwxr-xr-x",
+                    command = " overlay/",
+                    prefixColor = SecondaryTeal
+                )
+                
+                Spacer(modifier = Modifier.height(2.dp))
+                
+                TerminalLine(
+                    prefix = "drwxr-xr-x",
+                    command = " config/",
+                    prefixColor = SecondaryTeal
+                )
+                
+                Spacer(modifier = Modifier.height(2.dp))
+                
+                TerminalLine(
+                    prefix = "-rw-r--r--",
+                    command = " sensitivity.conf",
+                    prefixColor = Color.LightGray
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TerminalLine(
+                    prefix = "user@target-assist:~$",
+                    command = " cd overlay",
+                    prefixColor = PrimaryBlue
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TerminalLine(
+                    prefix = "user@target-assist:~/overlay$",
+                    command = " ls",
+                    prefixColor = PrimaryBlue
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Code,
+                        contentDescription = null,
+                        tint = Color.Yellow,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.width(4.dp))
+                    
+                    Text(
+                        text = "crosshair.conf",
+                        color = Color.White,
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(2.dp))
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Computer,
+                        contentDescription = null,
+                        tint = SecondaryTeal,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.width(4.dp))
+                    
+                    Text(
+                        text = "target_service.sh",
+                        color = Color.White,
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TerminalLine(
+                    prefix = "user@target-assist:~/overlay$",
+                    command = " _",
+                    prefixColor = PrimaryBlue
                 )
             }
-            
-            // Draw a crosshair in the center
-            val centerX = width / 2
-            val centerY = height / 2
-            
-            // Horizontal line of crosshair
-            drawLine(
-                color = PrimaryBlue,
-                start = Offset(centerX - 40, centerY),
-                end = Offset(centerX + 40, centerY),
-                strokeWidth = 2f,
-                cap = StrokeCap.Round
-            )
-            
-            // Vertical line of crosshair
-            drawLine(
-                color = PrimaryBlue,
-                start = Offset(centerX, centerY - 40),
-                end = Offset(centerX, centerY + 40),
-                strokeWidth = 2f,
-                cap = StrokeCap.Round
-            )
-            
-            // Draw a dot at the center
-            drawCircle(
-                color = SecondaryTeal,
-                radius = 5f,
-                center = Offset(centerX, centerY)
-            )
         }
+    }
+}
+
+@Composable
+fun TerminalLine(
+    prefix: String,
+    command: String,
+    prefixColor: Color
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = prefix,
+            color = prefixColor,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 14.sp
+        )
+        
+        Text(
+            text = command,
+            color = Color.White,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 14.sp
+        )
     }
 } 
