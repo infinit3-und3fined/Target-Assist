@@ -29,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -94,4 +94,9 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    // Add JVM target compatibility for kapt
+    javacOptions {
+        option("-source", "11")
+        option("-target", "11")
+    }
 }
