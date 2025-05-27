@@ -1,19 +1,32 @@
 package com.example.targetassit.ui.home
 
+import android.Manifest
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,10 +45,64 @@ import com.example.targetassit.ui.theme.TextSecondary
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
+    systemInfoViewModel: SystemInfoViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val currentDpi by viewModel.currentDpi.collectAsState()
+    val permissionsNeeded by viewModel.permissionsNeeded.collectAsState()
+    val context = LocalContext.current
+    
+    // For handling system info permissions
+    var showPermissionDialog by remember { mutableStateOf(false) }
+    
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.values.all { it }
+        viewModel.onPermissionsResult(allGranted)
+        
+        if (allGranted) {
+            Toast.makeText(context, "Permissions granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Some permissions denied. System info may be limited.", Toast.LENGTH_LONG).show()
+        }
+    }
+    
+    // Check if we need to show permission dialog
+    LaunchedEffect(permissionsNeeded) {
+        showPermissionDialog = permissionsNeeded
+    }
+    
+    // Permission dialog
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            icon = { Icon(Icons.Default.Warning, contentDescription = null) },
+            title = { Text("Permissions Required") },
+            text = { Text("Target Assist needs permissions to access system information for the terminal display.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showPermissionDialog = false
+                        permissionsLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            )
+                        )
+                    }
+                ) {
+                    Text("Grant Permissions")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showPermissionDialog = false }) {
+                    Text("Later")
+                }
+            }
+        )
+    }
     
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -46,7 +113,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            // Left panel (larger panel) with DPI Grid Visualization
+            // Left panel (larger panel) with DPI Grid Visualization as terminal
             PanelCard(
                 modifier = Modifier
                     .weight(1f)
