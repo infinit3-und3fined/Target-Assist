@@ -5,22 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.targetassit.ui.theme.PrimaryBlue
-import com.example.targetassit.ui.theme.PrimaryLight
 import com.example.targetassit.ui.theme.SecondaryTeal
 import com.example.targetassit.ui.theme.SurfaceLight
-import com.example.targetassit.ui.theme.TextPrimary
-import com.example.targetassit.ui.theme.TextSecondary
 import kotlin.math.roundToInt
 
 @Composable
@@ -91,24 +84,5 @@ fun DpiGridVisualizer(
                 center = Offset(centerX, centerY)
             )
         }
-        
-        Text(
-            text = "DPI: $dpi",
-            color = TextPrimary,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(8.dp)
-        )
-        
-        Text(
-            text = "Grid spacing: ${(dpi * scaleFactor).roundToInt()} px",
-            color = TextSecondary,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp)
-        )
     }
 } 

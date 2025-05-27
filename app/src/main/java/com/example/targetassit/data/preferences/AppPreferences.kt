@@ -12,13 +12,9 @@ class AppPreferences(context: Context) {
         PREFS_NAME, Context.MODE_PRIVATE
     )
     
-    // DPI setting
+    // DPI setting - kept for grid visualization
     private val _dpiFlow = MutableStateFlow(getDpi())
     val dpiFlow: StateFlow<Int> = _dpiFlow.asStateFlow()
-    
-    // Sensitivity setting
-    private val _sensitivityFlow = MutableStateFlow(getSensitivity())
-    val sensitivityFlow: StateFlow<Float> = _sensitivityFlow.asStateFlow()
     
     // Overlay active state
     private val _overlayActiveFlow = MutableStateFlow(isOverlayActive())
@@ -31,13 +27,6 @@ class AppPreferences(context: Context) {
     
     fun getDpi(): Int = prefs.getInt(KEY_DPI, DEFAULT_DPI)
     
-    fun setSensitivity(sensitivity: Float) {
-        prefs.edit().putFloat(KEY_SENSITIVITY, sensitivity).apply()
-        _sensitivityFlow.value = sensitivity
-    }
-    
-    fun getSensitivity(): Float = prefs.getFloat(KEY_SENSITIVITY, DEFAULT_SENSITIVITY)
-    
     fun setOverlayActive(active: Boolean) {
         prefs.edit().putBoolean(KEY_OVERLAY_ACTIVE, active).apply()
         _overlayActiveFlow.value = active
@@ -48,11 +37,9 @@ class AppPreferences(context: Context) {
     companion object {
         private const val PREFS_NAME = "target_assist_prefs"
         private const val KEY_DPI = "dpi"
-        private const val KEY_SENSITIVITY = "sensitivity"
         private const val KEY_OVERLAY_ACTIVE = "overlay_active"
         
         private const val DEFAULT_DPI = 360
-        private const val DEFAULT_SENSITIVITY = 1.0f
         
         @Volatile
         private var INSTANCE: AppPreferences? = null

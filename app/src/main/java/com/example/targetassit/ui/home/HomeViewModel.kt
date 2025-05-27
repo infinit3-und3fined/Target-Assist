@@ -17,14 +17,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     
-    // Current device DPI from preferences
+    // Current device DPI from preferences - needed for grid visualization only
     val currentDpi = appPreferences.dpiFlow
     
     init {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                isOverlayActive = appPreferences.isOverlayActive(),
-                currentSensitivity = appPreferences.getSensitivity()
+                isOverlayActive = appPreferences.isOverlayActive()
             )
         }
     }
@@ -53,25 +52,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     
+    // Keep this function just for the grid visualization
     fun updateDpi(dpi: Int) {
         viewModelScope.launch {
             appPreferences.setDpi(dpi)
-        }
-    }
-    
-    fun updateSensitivity(sensitivity: Float) {
-        viewModelScope.launch {
-            appPreferences.setSensitivity(sensitivity)
-            _uiState.value = _uiState.value.copy(
-                currentSensitivity = sensitivity
-            )
         }
     }
 }
 
 data class HomeUiState(
     val isOverlayActive: Boolean = false,
-    val currentSensitivity: Float = 1.0f,
     val isLoading: Boolean = false,
     val error: String? = null
 ) 

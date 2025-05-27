@@ -6,8 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +23,6 @@ import com.example.targetassit.ui.common.CircularButton
 import com.example.targetassit.ui.common.PanelCard
 import com.example.targetassit.ui.theme.CardBackground
 import com.example.targetassit.ui.theme.ErrorRed
-import com.example.targetassit.ui.theme.PrimaryBlue
 import com.example.targetassit.ui.theme.SecondaryTeal
 import com.example.targetassit.ui.theme.SuccessGreen
 import com.example.targetassit.ui.theme.SurfaceLight
@@ -73,18 +70,15 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .weight(0.3f)
                 ) {
-                    // First card - Sensitivity
+                    // First card - DPI
                     PanelCard(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "DPI",
@@ -92,10 +86,6 @@ fun HomeScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            // Empty box for now
                         }
                     }
                     
@@ -107,10 +97,9 @@ fun HomeScreen(
                             .weight(1f)
                             .fillMaxHeight()
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Layout",
@@ -118,8 +107,6 @@ fun HomeScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            
-                            // Empty box for now
                         }
                     }
                     
@@ -131,10 +118,9 @@ fun HomeScreen(
                             .weight(1f)
                             .fillMaxHeight()
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Settings",
@@ -142,8 +128,6 @@ fun HomeScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            
-                            // Empty box for now
                         }
                     }
                 }
@@ -181,36 +165,6 @@ fun HomeScreen(
                                 text = if (uiState.isOverlayActive) "Overlay active" else "Overlay inactive",
                                 color = TextSecondary,
                                 fontSize = 14.sp
-                            )
-                        }
-                        
-                        // DPI Slider in the center
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(horizontal = 32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Sensitivity: $currentDpi DPI",
-                                color = TextPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            
-                            Spacer(modifier = Modifier.height(12.dp))
-                            
-                            // DPI Slider
-                            Slider(
-                                value = currentDpi.toFloat(),
-                                onValueChange = { viewModel.updateDpi(it.toInt()) },
-                                valueRange = 160f..800f,
-                                steps = 0,
-                                colors = SliderDefaults.colors(
-                                    thumbColor = PrimaryBlue,
-                                    activeTrackColor = PrimaryBlue,
-                                    inactiveTrackColor = PrimaryBlue.copy(alpha = 0.3f)
-                                )
                             )
                         }
                         
