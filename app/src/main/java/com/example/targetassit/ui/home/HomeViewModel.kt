@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.targetassit.data.preferences.UserPreferences
 import com.example.targetassit.data.preferences.UserPreferencesRepository
+import com.example.targetassit.ui.customhud.ButtonPosition
+import com.example.targetassit.ui.sensitivity.SensitivitySettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +29,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     isOverlayEnabled = preferences.isOverlayEnabled,
                     gridDensity = preferences.gridDensity,
                     isGridVisible = preferences.isGridVisible,
-                    isCenterMarkerVisible = preferences.isCenterMarkerVisible
+                    isCenterMarkerVisible = preferences.isCenterMarkerVisible,
+                    sensitivitySettings = preferences.sensitivitySettings,
+                    hudButtonPositions = preferences.hudButtonPositions
                 )
             }
         }
@@ -49,6 +53,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         userPreferencesRepository.updateCenterMarkerVisibility(visible)
     }
     
+    fun updateSensitivitySettings(settings: SensitivitySettings) {
+        userPreferencesRepository.updateSensitivitySettings(settings)
+    }
+    
+    fun updateHudButtonPositions(buttonPositions: List<ButtonPosition>) {
+        userPreferencesRepository.updateHudButtonPositions(buttonPositions)
+    }
+    
     class Factory(private val application: Application) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -65,5 +77,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val gridDensity: Int = 30,
     val isGridVisible: Boolean = true,
-    val isCenterMarkerVisible: Boolean = true
+    val isCenterMarkerVisible: Boolean = true,
+    val sensitivitySettings: SensitivitySettings = SensitivitySettings(),
+    val hudButtonPositions: List<ButtonPosition> = emptyList()
 ) 

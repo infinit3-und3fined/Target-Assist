@@ -7,9 +7,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.targetassit.ui.about.AboutScreen
+import com.example.targetassit.ui.customhud.CustomHudScreen
 import com.example.targetassit.ui.home.HomeScreen
 import com.example.targetassit.ui.home.HomeViewModel
 import com.example.targetassit.ui.settings.SettingsScreen
+import com.example.targetassit.ui.sensitivity.SensitivityScreen
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
@@ -51,17 +54,24 @@ fun AppNavigation(
             )
         }
         
-        // Placeholder for other screens
         composable(Screen.Sensitivity.route) {
-            // TODO: Implement Sensitivity screen
+            SensitivityScreen(
+                onBackClick = { navController.popBackStack() },
+                onSensitivityChange = { viewModel.updateSensitivitySettings(it) }
+            )
         }
         
         composable(Screen.CustomHud.route) {
-            // TODO: Implement Custom HUD screen
+            CustomHudScreen(
+                onBackClick = { navController.popBackStack() },
+                onHudLayoutChange = { viewModel.updateHudButtonPositions(it) }
+            )
         }
         
         composable(Screen.About.route) {
-            // TODO: Implement About screen
+            AboutScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 } 
