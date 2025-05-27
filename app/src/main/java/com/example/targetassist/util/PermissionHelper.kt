@@ -1,4 +1,4 @@
-package com.example.targetassit.util
+package com.example.targetassist.util
 
 import android.content.Context
 import android.content.Intent

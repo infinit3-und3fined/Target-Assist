@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.theme
+package com.example.targetassist.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

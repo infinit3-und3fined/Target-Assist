@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.common
+package com.example.targetassist.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,9 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.targetassit.ui.theme.PrimaryBlue
-import com.example.targetassit.ui.theme.PrimaryLight
-import com.example.targetassit.ui.theme.SurfaceLight
+import com.example.targetassist.ui.theme.PrimaryBlue
+import com.example.targetassist.ui.theme.PrimaryLight
+import com.example.targetassist.ui.theme.SurfaceLight
 
 @Composable
 fun CircularButton(

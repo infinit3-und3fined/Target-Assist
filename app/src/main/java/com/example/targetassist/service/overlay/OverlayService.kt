@@ -1,4 +1,4 @@
-package com.example.targetassit.service.overlay
+package com.example.targetassist.service.overlay
 
 import android.app.Service
 import android.content.Context
@@ -20,8 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import com.example.targetassit.ui.theme.PrimaryBlue
-import com.example.targetassit.ui.theme.SecondaryTeal
+import com.example.targetassist.ui.theme.PrimaryBlue
+import com.example.targetassist.ui.theme.SecondaryTeal
 
 class OverlayService : Service() {
     
@@ -117,9 +117,9 @@ class OverlayService : Service() {
     }
     
     companion object {
-        private const val ACTION_SHOW = "com.example.targetassit.action.SHOW_OVERLAY"
-        private const val ACTION_HIDE = "com.example.targetassit.action.HIDE_OVERLAY"
-        private const val ACTION_TOGGLE = "com.example.targetassit.action.TOGGLE_OVERLAY"
+        private const val ACTION_SHOW = "com.example.targetassist.action.SHOW_OVERLAY"
+        private const val ACTION_HIDE = "com.example.targetassist.action.HIDE_OVERLAY"
+        private const val ACTION_TOGGLE = "com.example.targetassist.action.TOGGLE_OVERLAY"
         
         fun showOverlay(context: Context) {
             val intent = Intent(context, OverlayService::class.java).apply {

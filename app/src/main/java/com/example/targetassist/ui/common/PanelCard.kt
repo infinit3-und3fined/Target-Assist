@@ -1,4 +1,4 @@
-package com.example.targetassit.ui.common
+package com.example.targetassist.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.targetassit.ui.theme.CardBackground
-import com.example.targetassit.ui.theme.CardBorder
+import com.example.targetassist.ui.theme.CardBackground
+import com.example.targetassist.ui.theme.CardBorder
 
 @Composable
 fun PanelCard(
