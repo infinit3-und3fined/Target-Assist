@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Target Assit</string>
+    <string name="app_name">Target Assist</string>
+    <string name="home_title">Target Assist</string>
+    <string name="home_subtitle">Optimize your Free Fire experience</string>
+    <string name="btn_start_overlay">Start Overlay</string>
+    <string name="btn_sensitivity">Sensitivity</string>
+    <string name="btn_custom_hud">Custom HUD</string>
+    <string name="btn_settings">Settings</string>
+    <string name="btn_about">About</string>
 </resources>
