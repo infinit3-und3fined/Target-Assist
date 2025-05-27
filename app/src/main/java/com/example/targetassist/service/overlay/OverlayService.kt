@@ -126,4 +126,3 @@ class OverlayService : Service() {
             .build()
     }
 } 
-} 

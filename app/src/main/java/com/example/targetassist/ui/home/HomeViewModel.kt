@@ -61,14 +61,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
     
     fun startOverlayService() {
-        val intent = Intent(application, OverlayService::class.java)
-        application.startService(intent)
+        val context = getApplication<Application>()
+        val intent = Intent(context, OverlayService::class.java)
+        context.startService(intent)
         _isOverlayRunning.value = true
     }
     
     fun stopOverlayService() {
-        val intent = Intent(application, OverlayService::class.java)
-        application.stopService(intent)
+        val context = getApplication<Application>()
+        val intent = Intent(context, OverlayService::class.java)
+        context.stopService(intent)
         _isOverlayRunning.value = false
     }
     

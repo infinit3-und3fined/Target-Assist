@@ -1,11 +1,13 @@
 package com.example.targetassit.ui.home
 
 import android.Manifest
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Close
@@ -42,18 +44,15 @@ import com.example.targetassit.ui.theme.SurfaceLight
 import com.example.targetassit.ui.theme.TargetAssitTheme
 import com.example.targetassit.ui.theme.TextPrimary
 import com.example.targetassit.ui.theme.TextSecondary
+import com.example.targetassist.ui.home.TerminalVisualizer
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel()
 ) {
-    // Use a safe pattern for accessing the systemInfoViewModel to prevent crashes
+    // Use a direct reference to SystemInfoViewModel
     val context = LocalContext.current
-    val systemInfoViewModel = try {
-        viewModel<SystemInfoViewModel>()
-    } catch (e: Exception) {
-        null
-    }
+    val systemInfoViewModel = viewModel<SystemInfoViewModel>()
     
     val uiState by viewModel.uiState.collectAsState()
     val currentDpi by viewModel.currentDpi.collectAsState()
@@ -126,7 +125,7 @@ fun HomeScreen(
                     .fillMaxHeight(),
                 elevation = 2
             ) {
-                DpiGridVisualizer(dpi = currentDpi)
+                TerminalVisualizer(dpi = currentDpi)
             }
             
             Spacer(modifier = Modifier.width(8.dp))

@@ -50,6 +50,7 @@ import com.example.targetassist.ui.theme.TargetAssistTheme
 import com.example.targetassist.ui.theme.TextPrimary
 import com.example.targetassist.ui.theme.TextSecondary
 import com.example.targetassist.util.PermissionHelper
+import com.example.targetassist.ui.home.TerminalVisualizer
 
 @Composable
 fun HomeScreen(

@@ -234,16 +234,4 @@ fun rememberSystemInfo(viewModel: SystemInfoViewModel = androidx.lifecycle.viewm
         dpi = "${context.resources.displayMetrics.densityDpi} dpi",
         touchSamplingRate = "Loading..."
     )
-}
-
-data class SystemInfo(
-    val deviceModel: String = "Unknown Device",
-    val androidVersion: String = "Unknown",
-    val cpuInfo: String = "Unknown",
-    val cpuUsage: String = "0%",
-    val memoryInfo: String = "0 MB / 0 MB",
-    val screenInfo: String = "0 x 0",
-    val refreshRate: String = "0 Hz",
-    val dpi: String = "0 dpi",
-    val touchSamplingRate: String = "Unknown"
-) 
+} 
