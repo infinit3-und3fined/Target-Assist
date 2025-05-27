@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Computer
-import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +51,7 @@ fun DpiGridVisualizer(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Terminal,
+                    imageVector = Icons.Default.Settings,
                     contentDescription = null,
                     tint = SecondaryTeal,
                     modifier = Modifier.size(24.dp)
@@ -133,7 +133,7 @@ fun DpiGridVisualizer(
                 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Code,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null,
                         tint = Color.Yellow,
                         modifier = Modifier.size(16.dp)
@@ -153,7 +153,7 @@ fun DpiGridVisualizer(
                 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Computer,
+                        imageVector = Icons.Default.Check,
                         contentDescription = null,
                         tint = SecondaryTeal,
                         modifier = Modifier.size(16.dp)
