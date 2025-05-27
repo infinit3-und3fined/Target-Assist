@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.TargetAssit" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#FF0000</item>
-        <item name="colorPrimaryDark">#C00000</item>
-        <item name="colorAccent">#FF0000</item>
-    </style>
+    <style name="Theme.TargetAssit" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
