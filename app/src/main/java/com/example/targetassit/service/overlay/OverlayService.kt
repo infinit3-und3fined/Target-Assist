@@ -6,20 +6,22 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.IBinder
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import com.example.targetassit.R
+import com.example.targetassit.ui.theme.PrimaryBlue
+import com.example.targetassit.ui.theme.SecondaryTeal
 
 class OverlayService : Service() {
     
@@ -90,12 +92,21 @@ class OverlayService : Service() {
     
     @Composable
     private fun OverlayContent() {
-        // Simple overlay content - a red dot in the center
+        // Modern crosshair overlay
         Box(
             modifier = Modifier
-                .size(20.dp)
-                .background(Color.Red.copy(alpha = 0.5f), CircleShape)
-        )
+                .size(14.dp)
+                .clip(CircleShape)
+                .background(Color.Transparent)
+                .border(1.5f.dp, SecondaryTeal, CircleShape)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .clip(CircleShape)
+                    .background(PrimaryBlue)
+            )
+        }
     }
     
     override fun onBind(intent: Intent?): IBinder? = null

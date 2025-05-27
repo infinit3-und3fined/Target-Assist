@@ -11,9 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.targetassit.ui.theme.PrimaryBlue
+import com.example.targetassit.ui.theme.PrimaryLight
+import com.example.targetassit.ui.theme.SecondaryTeal
+import com.example.targetassit.ui.theme.SurfaceLight
+import com.example.targetassit.ui.theme.TextPrimary
+import com.example.targetassit.ui.theme.TextSecondary
 import kotlin.math.roundToInt
 
 @Composable
@@ -24,13 +31,11 @@ fun DpiGridVisualizer(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F8F8))
+            .background(SurfaceLight)
             .padding(16.dp)
     ) {
         // Calculate grid spacing based on DPI
-        // For visualization purposes, we'll scale it to be visible
-        // In a real implementation, this would be more accurate
-        val scaleFactor = 0.2f  // Adjust this to make grid more/less dense
+        val scaleFactor = 0.2f
         val spacing = (dpi * scaleFactor).roundToInt().coerceAtLeast(10)
         
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -43,7 +48,7 @@ fun DpiGridVisualizer(
                     color = Color(0xFFE0E0E0),
                     start = Offset(x.toFloat(), 0f),
                     end = Offset(x.toFloat(), height),
-                    strokeWidth = 1f
+                    strokeWidth = 0.5f
                 )
             }
             
@@ -53,7 +58,7 @@ fun DpiGridVisualizer(
                     color = Color(0xFFE0E0E0),
                     start = Offset(0f, y.toFloat()),
                     end = Offset(width, y.toFloat()),
-                    strokeWidth = 1f
+                    strokeWidth = 0.5f
                 )
             }
             
@@ -63,26 +68,35 @@ fun DpiGridVisualizer(
             
             // Horizontal line of crosshair
             drawLine(
-                color = Color.Red,
-                start = Offset(centerX - 50, centerY),
-                end = Offset(centerX + 50, centerY),
-                strokeWidth = 2f
+                color = PrimaryBlue,
+                start = Offset(centerX - 40, centerY),
+                end = Offset(centerX + 40, centerY),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round
             )
             
             // Vertical line of crosshair
             drawLine(
-                color = Color.Red,
-                start = Offset(centerX, centerY - 50),
-                end = Offset(centerX, centerY + 50),
-                strokeWidth = 2f
+                color = PrimaryBlue,
+                start = Offset(centerX, centerY - 40),
+                end = Offset(centerX, centerY + 40),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round
+            )
+            
+            // Draw a dot at the center
+            drawCircle(
+                color = SecondaryTeal,
+                radius = 5f,
+                center = Offset(centerX, centerY)
             )
         }
         
         Text(
             text = "DPI: $dpi",
-            color = Color.Black,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
+            color = TextPrimary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(8.dp)
@@ -90,8 +104,8 @@ fun DpiGridVisualizer(
         
         Text(
             text = "Grid spacing: ${(dpi * scaleFactor).roundToInt()} px",
-            color = Color.Black,
-            fontSize = 14.sp,
+            color = TextSecondary,
+            fontSize = 12.sp,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(8.dp)
