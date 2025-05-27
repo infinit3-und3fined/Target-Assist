@@ -49,6 +49,20 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    
+    // Runtime
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    
+    // Datastore for preferences
+    implementation(libs.androidx.datastore.preferences)
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
