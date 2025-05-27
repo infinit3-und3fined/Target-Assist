@@ -3,7 +3,7 @@ package com.example.targetassit.ui.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -146,7 +146,7 @@ fun HomeScreen(
                             backgroundColor = if (uiState.isOverlayActive) 
                                 Color(0xFFE57373) else MaterialTheme.colorScheme.primary,
                             icon = if (uiState.isOverlayActive) 
-                                Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                                Icons.Filled.Close else Icons.Filled.PlayArrow,
                             onClick = { 
                                 if (uiState.isOverlayActive) {
                                     viewModel.onStopOverlay()
