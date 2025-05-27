@@ -2,12 +2,14 @@ package com.example.targetassit.ui.home
 
 import android.Manifest
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.targetassit.data.preferences.AppPreferences
-import com.example.targetassit.service.overlay.OverlayService
+import com.example.targetassist.service.overlay.OverlayService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +27,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     
     // Current device DPI from preferences - needed for grid visualization only
     val currentDpi = appPreferences.dpiFlow
+    
+    // Current device DPI for display
+    private val _currentDpi = MutableStateFlow(getApplication<Application>().resources.displayMetrics.densityDpi)
+    val currentDpiDisplay: StateFlow<Int> = _currentDpi.asStateFlow()
     
     init {
         viewModelScope.launch {
@@ -56,27 +62,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
     
     fun onStartOverlay() {
-        viewModelScope.launch {
-            appPreferences.setOverlayActive(true)
-            _uiState.value = _uiState.value.copy(
-                isOverlayActive = true
-            )
-            
-            // Start the overlay service
-            OverlayService.showOverlay(getApplication())
-        }
+        val context = getApplication<Application>()
+        // Start the overlay service
+        val intent = Intent(context, OverlayService::class.java)
+        context.startService(intent)
+        // Update UI state
+        _uiState.value = _uiState.value.copy(isOverlayActive = true)
     }
     
     fun onStopOverlay() {
-        viewModelScope.launch {
-            appPreferences.setOverlayActive(false)
-            _uiState.value = _uiState.value.copy(
-                isOverlayActive = false
-            )
-            
-            // Stop the overlay service
-            OverlayService.hideOverlay(getApplication())
-        }
+        val context = getApplication<Application>()
+        // Stop the overlay service
+        val intent = Intent(context, OverlayService::class.java)
+        context.stopService(intent)
+        // Update UI state
+        _uiState.value = _uiState.value.copy(isOverlayActive = false)
     }
     
     // Keep this function just for the grid visualization

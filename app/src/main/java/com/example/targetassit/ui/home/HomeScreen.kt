@@ -118,7 +118,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            // Left panel (larger panel) with DPI Grid Visualization as terminal
+            // Left panel (larger panel) with Terminal Visualization instead of DPI Grid
             PanelCard(
                 modifier = Modifier
                     .weight(1f)
@@ -227,7 +227,7 @@ fun HomeScreen(
                                     .size(8.dp)
                                     .background(
                                         color = if (uiState.isOverlayActive) SuccessGreen else TextSecondary,
-                                        shape = androidx.compose.foundation.shape.CircleShape
+                                        shape = CircleShape
                                     )
                             )
                             
